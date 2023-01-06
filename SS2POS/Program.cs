@@ -12,7 +12,8 @@ public class Program
         var conString = @"Server=localhost;Database=SS2POS;User Id=sa;Password=Strong.Pwd-123;TrustServerCertificate=true;";
         builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(conString));
         // Add services to the container.
-        builder.Services.AddControllersWithViews();
+        builder.Services.AddControllersWithViews()
+            .AddRazorRuntimeCompilation();
 
         var app = builder.Build();
 
