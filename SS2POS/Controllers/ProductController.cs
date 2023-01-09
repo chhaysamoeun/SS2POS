@@ -72,6 +72,7 @@ namespace SS2POS.Controllers
                     Price=product.Price,
                     Qty=product.Qty,
                     CategoryId=product.CategoryId,
+                    Barcode=product.Barcode,
                     Image= UploadImage(product)
                 };
                 _context.Add(prod);

@@ -16,7 +16,9 @@ namespace SS2POS.Models
 		public int Qty { get; set; }
 		public decimal Price { get; set; }
 		public string Image { get; set; }
-
+		[Required]
+		[MaxLength(10)]
+		public string Barcode { get; set; }
 		public Category Category { get; set; }
 	}
 }
