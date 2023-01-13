@@ -79,4 +79,73 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $("#search").keypress(function (e) {
+                if (e.which == 13) {
+                    var i = 0;
+                    var b = false;
+                    $("#saleList > tbody > tr").each(function () {
+                        var barcode = document.getElementsByName("barcode[]")[i].value;
+                        if ($("#search").val() == barcode) {
+                            var qty = $(this).closest("tr").find("td:eq(2)").text();
+                            var price = $(this).closest("tr").find("td:eq(1)").text();
+                            $(this).closest("tr").find("td:eq(2)").text(Number(qty) + 1);
+                            $(this).closest("tr").find("td:eq(3)").text((Number(qty) + 1) * Number(price));
+                            b = true;
+                            Calculator();
+                        }
+                        i++;
+                    });
+                    if (b == false) {
+                        $.ajax({
+                            method: "GET",
+                            url: "/Sale/ScanBarcode/?code=" + $("#search").val(),
+                            contentType: "application/json",
+                            success: function (data) {
+                                console.log(data);
+                                var row = "<tr><td><input hidden name='barcode[]' value='" + data.barcode + "'/>" + data.name;
+                                row += "</td><td>" + data.price;
+                                row += "</td><td>1";
+                                row += "</td><td>" + data.price;
+                                row += "</td><td></td></tr>";
+                                $("#saleList").append(row);
+                                Calculator();
+                            }, error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                    }
+                   
+                    $("#search").val("");
+                }
+            });
+            $("#Discount").blur(function () {
+                CalGrand();
+            });
+            $("#VAT").blur(function () {
+                CalGrand();
+            });
+        });
+        function Calculator() {
+            var total = 0;
+            $("#saleList > tbody > tr").each(function () {
+                var amount = $(this).closest("tr").find("td:eq(3)").text();
+                total += Number(amount);
+            });
+            $("#Total").val(total);
+            CalGrand();
+        }
+        function CalGrand() {
+            var total = $("#Total").val();
+            var discount = $("#Discount").val();
+            discount = Number(total) * Number(discount) / 100;
+            var grandtotal = Number(total) - Number(discount);
+            var vat = $("#VAT").val();
+            vat = Number(grandtotal) * Number(vat) / 100;
+            grandtotal = Number(grandtotal) + Number(vat);
+            $("#GrandTotal").val(grandtotal);
+
+        }
+    </script>
 }

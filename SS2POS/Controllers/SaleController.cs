@@ -25,7 +25,8 @@ namespace SS2POS.Controllers
             var appDbContext = _context.Sale.Include(s => s.Customer);
             return View(await appDbContext.ToListAsync());
         }
-
+        public async Task<JsonResult> ScanBarcode(string code)
+            => Json(await _context.Product.Where(x => x.Barcode.Equals(code)).FirstOrDefaultAsync());
         // GET: Sale/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
